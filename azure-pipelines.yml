@@ -15,11 +15,27 @@ jobs:
         inputs:
           pathToPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: windowsExe
+  - job: Mac
+    timeoutInMinutes: 0
+    pool:
+      vmImage: 'macOS-10.13'
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '3.1.x'
+      - powershell: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+        displayName: 'Build Mac artifact'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Mac executable'
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: macExe
   - job: Release
     timeoutInMinutes: 0
     displayName: Release
     dependsOn:
       - Windows
+      - Mac
     condition: succeeded()
     pool:
       vmImage: ubuntu-16.04
@@ -31,6 +47,13 @@ jobs:
           downloadType: 'single'
           artifactName: 'windowsExe'
           downloadPath: '$(System.ArtifactsDirectory)'
+      - task: DownloadBuildArtifacts@0
+        displayName: 'Download Mac exectable'
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'macExe'
+          downloadPath: '$(System.ArtifactsDirectory)'
       - task: GitHubRelease@0
         displayName: 'Release Package'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -41,3 +64,4 @@ jobs:
           addChangeLog: false
           assets: |
             $(System.ArtifactsDirectory)/windowsExe/*.exe
+            $(System.ArtifactsDirectory)/macExe/*
