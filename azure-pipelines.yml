@@ -39,7 +39,7 @@ jobs:
         inputs:
           version: '3.1.x'
       - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
-        displayName: 'Build Mac artifact'
+        displayName: 'Build Linux artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Linux executable'
         inputs:
