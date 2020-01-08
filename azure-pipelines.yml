@@ -63,5 +63,5 @@ jobs:
           title: 'GenCssModulesType Release'
           addChangeLog: false
           assets: |
-            $(System.ArtifactsDirectory)/windowsExe/*.exe
-            $(System.ArtifactsDirectory)/macExe/*
+            $(System.ArtifactsDirectory)/windowsExe/GenCssModulesType.exe
+            $(System.ArtifactsDirectory)/macExe/GenCssModulesType
