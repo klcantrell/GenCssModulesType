@@ -23,7 +23,7 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - powershell: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - script: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
         displayName: 'Build Mac artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Mac executable'
