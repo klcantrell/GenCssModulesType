@@ -43,8 +43,12 @@ let handleOnChange path =
                 |> parseRules
                 |> List.map removeDot
                 |> List.map typeDefOfRule
-                |> List.reduce toTypeDefFile
-                |> saveFile (path + ".d.ts")
+                |> function
+                    | [] -> printWithColor ConsoleColor.Yellow ("Created " + path)
+                    | typeDefs -> 
+                        typeDefs
+                        |> List.reduce toTypeDefFile
+                        |> saveFile (path + ".d.ts")
             with
                 | :? System.IO.IOException -> 
                     ("Retrying, attempt: " + (retries + 1).ToString()) |> printWithColor ConsoleColor.Yellow
