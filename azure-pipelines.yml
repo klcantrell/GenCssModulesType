@@ -8,7 +8,8 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - powershell: 'dotnet publish -r win-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Windows'
+      - powershell: 'dotnet publish -r win-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - powershell: 'mv $(Build.ArtifactStagingDirectory)/GenCssModulesType.exe $(Build.ArtifactStagingDirectory)/GenCssModulesType-windows.exe'
         displayName: 'Build Windows artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Windows executable'
@@ -23,13 +24,14 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - script: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Mac'
-        displayName: 'Build Mac artifact'
+      - script: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - script: 'mv $(Build.ArtifactStagingDirectory)/GenCssModulesType $(Build.ArtifactStagingDirectory)/GenCssModulesType-osx'
+        displayName: 'Build OSX artifact'
       - task: PublishBuildArtifacts@1
-        displayName: 'Publish Mac executable'
+        displayName: 'Publish OSX executable'
         inputs:
           pathToPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: macExe
+          artifactName: osxExe
   - job: Linux
     timeoutInMinutes: 0
     pool:
@@ -39,7 +41,8 @@ jobs:
         inputs:
           version: '3.1.x'
       - script: 'sudo apt-get install clang-3.9 zlib1g-dev libkrb5-dev libtinfo5'
-      - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Linux'
+      - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - script: 'mv $(Build.ArtifactStagingDirectory)/GenCssModulesType $(Build.ArtifactStagingDirectory)/GenCssModulesType-linux'
         displayName: 'Build Linux artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Linux executable'
@@ -65,11 +68,11 @@ jobs:
           artifactName: 'windowsExe'
           downloadPath: '$(System.ArtifactsDirectory)'
       - task: DownloadBuildArtifacts@0
-        displayName: 'Download Mac exectable'
+        displayName: 'Download OSX exectable'
         inputs:
           buildType: 'current'
           downloadType: 'single'
-          artifactName: 'macExe'
+          artifactName: 'osxExe'
           downloadPath: '$(System.ArtifactsDirectory)'
       - task: DownloadBuildArtifacts@0
         displayName: 'Download Linux exectable'
@@ -87,6 +90,6 @@ jobs:
           title: 'GenCssModulesType Release'
           addChangeLog: false
           assets: |
-            $(System.ArtifactsDirectory)/windowsExe/
-            $(System.ArtifactsDirectory)/macExe/
-            $(System.ArtifactsDirectory)/linuxExe/
+            $(System.ArtifactsDirectory)/windowsExe/GenCssModulesType-windows.exe
+            $(System.ArtifactsDirectory)/osxExe/GenCssModulesType-osx
+            $(System.ArtifactsDirectory)/linuxExe/GenCssModulesType-linux
