@@ -30,12 +30,29 @@ jobs:
         inputs:
           pathToPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: macExe
+  - job: Linux
+    timeoutInMinutes: 0
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '3.1.x'
+      - script: "sudo apt-get install clang-3.9"
+      - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+        displayName: 'Build Linux artifact'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Linux executable'
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: linuxExe
   - job: Release
     timeoutInMinutes: 0
     displayName: Release
     dependsOn:
       - Windows
       - Mac
+      - Linux
     condition: succeeded()
     pool:
       vmImage: ubuntu-16.04
@@ -54,6 +71,13 @@ jobs:
           downloadType: 'single'
           artifactName: 'macExe'
           downloadPath: '$(System.ArtifactsDirectory)'
+      - task: DownloadBuildArtifacts@0
+        displayName: 'Download Linux exectable'
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'linuxExe'
+          downloadPath: '$(System.ArtifactsDirectory)'
       - task: GitHubRelease@0
         displayName: 'Release Package'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -65,3 +89,4 @@ jobs:
           assets: |
             $(System.ArtifactsDirectory)/windowsExe/GenCssModulesType.exe
             $(System.ArtifactsDirectory)/macExe/GenCssModulesType
+            $(System.ArtifactsDirectory)/linuxExe/GenCssModulesType
