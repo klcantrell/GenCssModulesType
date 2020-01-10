@@ -38,7 +38,7 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - script: "sudo apt-get install clang-3.9 zlib1g-dev libkrb5-dev libtinfo5"
+      - script: 'sudo apt-get install clang-3.9 zlib1g-dev libkrb5-dev libtinfo5'
       - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Linux'
         displayName: 'Build Linux artifact'
       - task: PublishBuildArtifacts@1
@@ -87,6 +87,6 @@ jobs:
           title: 'GenCssModulesType Release'
           addChangeLog: false
           assets: |
-            $(System.ArtifactsDirectory)/windowsExe/*
-            $(System.ArtifactsDirectory)/macExe/*
-            $(System.ArtifactsDirectory)/linuxExe/*
+            $(System.ArtifactsDirectory)/windowsExe/
+            $(System.ArtifactsDirectory)/macExe/
+            $(System.ArtifactsDirectory)/linuxExe/
