@@ -8,7 +8,7 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - powershell: 'dotnet publish -r win-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - powershell: 'dotnet publish -r win-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Windows'
         displayName: 'Build Windows artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Windows executable'
@@ -23,7 +23,7 @@ jobs:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - script: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - script: 'dotnet publish -r osx-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Mac'
         displayName: 'Build Mac artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Mac executable'
@@ -39,7 +39,7 @@ jobs:
         inputs:
           version: '3.1.x'
       - script: "sudo apt-get install clang-3.9 zlib1g-dev libkrb5-dev libtinfo5"
-      - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)'
+      - script: 'dotnet publish -r linux-x64 -c release -p:UseCoreRT=true --output $(Build.ArtifactStagingDirectory)/Linux'
         displayName: 'Build Linux artifact'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Linux executable'
@@ -87,6 +87,6 @@ jobs:
           title: 'GenCssModulesType Release'
           addChangeLog: false
           assets: |
-            $(System.ArtifactsDirectory)/windowsExe/GenCssModulesType.exe
-            $(System.ArtifactsDirectory)/macExe/GenCssModulesType
-            $(System.ArtifactsDirectory)/linuxExe/GenCssModulesType
+            $(System.ArtifactsDirectory)/windowsExe/*
+            $(System.ArtifactsDirectory)/macExe/*
+            $(System.ArtifactsDirectory)/linuxExe/*
