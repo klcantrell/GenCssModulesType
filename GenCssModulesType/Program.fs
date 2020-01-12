@@ -7,7 +7,7 @@ let main argv =
     printWithColor ConsoleColor.White "Edit a CSS file in this directory or subdirectories..."
     printWithColor ConsoleColor.White "TypeScript type defs shall be generated"
     Console.WriteLine()
-    printWithColor ConsoleColor.White "Enter q to quit"
+    printWithColor ConsoleColor.White "Enter quit() to exit"
     Console.WriteLine()
 
     let fileSystemWatcher = new FileSystemWatcher()
@@ -17,7 +17,6 @@ let main argv =
     fileSystemWatcher.Changed.Add(fun e -> handleOnChange e.FullPath)
     fileSystemWatcher.EnableRaisingEvents <- true
 
-    while (Console.Read() |> Convert.ToChar <>  'q') do
+    while (Console.ReadLine().Trim() <> "quit()") do
         ()
     0
-
