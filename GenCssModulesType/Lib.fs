@@ -32,7 +32,7 @@ let saveFile path content =
 let handleOnChange path =
     let rec handler retries =
         if retries > 10_000 then
-            "Could not open file" |> printErrorWithColor ConsoleColor.DarkRed
+            "Could not open file!" |> printErrorWithColor ConsoleColor.DarkRed
         else
             try
                 File.ReadAllText path
@@ -44,7 +44,5 @@ let handleOnChange path =
                     typeDefs
                     |> List.reduce toTypeDefFile
                     |> saveFile (path + ".d.ts")
-            with :? System.IO.IOException ->
-                ("Retrying, attempt: " + (retries + 1).ToString()) |> printWithColor ConsoleColor.Yellow
-                handler (retries + 1)
+            with :? System.IO.IOException -> handler (retries + 1)
     handler 0
